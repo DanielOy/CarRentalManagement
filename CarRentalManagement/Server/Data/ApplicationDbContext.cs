@@ -1,4 +1,5 @@
 ﻿using CarRentalManagement.Server.Models;
+using CarRentalManagement.Shared.Domain;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -17,5 +18,12 @@ namespace CarRentalManagement.Server.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Colour> Colours { get; set; }
+        public DbSet<Make> Makes { get; set; }
+        public DbSet<Model> Models { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
     }
 }

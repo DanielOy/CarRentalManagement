@@ -1,0 +1,21 @@
+﻿@page "/makes/create"
+@inject HttpClient client
+@inject NavigationManager navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create New Car Make</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create Make" OnValidSubmit="CreateMake" Make="make" />
+<br />
+
+@code {
+    Make make = new Make();
+
+    private async Task CreateMake()
+    {
+        await client.PostAsJsonAsync<Make>($"{EndPoints.MakesEndPoint}", make);
+        navManager.NavigateTo("/makes/");
+    }
+}

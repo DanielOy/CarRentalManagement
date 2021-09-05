@@ -1,0 +1,73 @@
+﻿@page "/customers/"
+@inject HttpClient client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<HeadingComponent Text="Customers" />
+<br />
+
+<a href="/customers/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Customer
+</a>
+<br />
+<br />
+
+@if (customers == null)
+{
+    <div class="alert alert-info">Loading Customers...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Contact Number</th>
+                <th>Email Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in customers)
+            {
+                <tr>
+                    <td>@customer.FirstName @customer.LastName</td>
+                    <td>@customer.ContactNumber</td>
+                    <td>@customer.EmailAddress</td>
+                    <td>
+                        <a href="/customers/view/@customer.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/customers/edit/@customer.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(customer.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Customer> customers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        customers = await this.client.GetFromJsonAsync<List<Customer>>(EndPoints.CustomersEndPoint);
+    }
+
+    async Task Delete(int customerId)
+    {
+        var customer = customers.First(x => x.Id == customerId);
+        bool confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {customer.EmailAddress}?");
+        if (confirm)
+        {
+            await client.DeleteAsync($"{EndPoints.CustomersEndPoint}/{customer.Id}");
+            await OnInitializedAsync();
+        }
+    }
+}

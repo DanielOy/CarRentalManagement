@@ -1,0 +1,73 @@
+﻿<EditForm Model="@Booking" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Customer: </label>
+            <div>
+                <select @bind="Booking.CustomerId" class="form-control">
+                    <option value="">-- Select Customer --</option>
+                    @if (customers != null)
+                    {
+                        @foreach (var customer in customers)
+                        {
+                            <option value="@customer.Id">@customer.TaxId | @customer.EmailAddress</option>
+                        }
+                    }
+                </select>
+                <ValidationMessage For="@(()=>Booking.CustomerId)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle: </label>
+            <div>
+                <select @bind="Booking.VehicleId" class="form-control">
+                    <option value="">-- Select Vehicle --</option>
+                    @if (vehicles != null)
+                    {
+                        @foreach (var vehicle in vehicles)
+                        {
+                            <option value="@vehicle.Id">@vehicle.Make.Name @vehicle.Model.Name | @vehicle.LicensePlateNumber</option>
+                        }
+                    }
+                </select>
+                <ValidationMessage For="@(()=>Booking.VehicleId)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Date Out:</label>
+            <div>
+                <InputDate @bind-Value="Booking.DateOut" class="form-control" />
+                <ValidationMessage For="@(()=>Booking.DateOut)" />
+            </div>
+        </div>
+
+        @if (Booking.Id > 0)
+        {
+
+            <div class="form-group">
+                <label>Date In: </label>
+                <div>
+                    <InputDate @bind-Value="Booking.DateIn" class="form-control" />
+                    <ValidationMessage For="@(()=>Booking.DateIn)" />
+                </div>
+            </div>
+        }
+    </fieldset>
+
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+
+    <BackToList Target="bookings"></BackToList>
+</EditForm>
+
+@code {
+
+}

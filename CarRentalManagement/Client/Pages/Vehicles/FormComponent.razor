@@ -1,0 +1,118 @@
+﻿@inject HttpClient client
+
+<EditForm Model="@Vehicle" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Make: </label>
+            <div>
+                <select @bind="Vehicle.MakeId" class="form-control">
+                    <option value="">-- Select Make --</option>
+                    @if (makes != null)
+                    {
+                        @foreach (var make in makes)
+                        {
+                            <option value="@make.Id">@make.Name</option>
+                        }
+                    }
+                </select>
+                <ValidationMessage For="@(()=>Vehicle.MakeId)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle: </label>
+            <div>
+                <select @bind="Vehicle.ModelId" class="form-control">
+                    <option value="">-- Select Vehicle --</option>
+                    @if (models != null)
+                    {
+                        @foreach (var model in models)
+                        {
+                            <option value="@model.Id">@model.Name</option>
+                        }
+                    }
+                </select>
+                <ValidationMessage For="@(()=>Vehicle.ModelId)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Colour: </label>
+            <div>
+                <InputSelect @bind-Value="Vehicle.ColourId" class="form-control">
+                    <option value="">-- Select Colour --</option>
+                    @if (colours != null)
+                    {
+                        @foreach (var colour in colours)
+                        {
+                            <option value="@colour.Id">@colour.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(()=>Vehicle.ColourId)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Year:</label>
+            <div>
+                <InputNumber @bind-Value="Vehicle.Year" class="form-control" />
+                <ValidationMessage For="@(()=>Vehicle.Year)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>License Plate Number:</label>
+            <div>
+                <InputText @bind-Value="Vehicle.LicensePlateNumber" class="form-control" />
+                <ValidationMessage For="@(()=>Vehicle.LicensePlateNumber)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle Identification Number:</label>
+            <div>
+                <InputText @bind-Value="Vehicle.Vin" class="form-control" />
+                <ValidationMessage For="@(()=>Vehicle.Vin)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Daily Rate:</label>
+            <div>
+                <InputNumber @bind-Value="Vehicle.RentalRate" class="form-control" />
+                <ValidationMessage For="@(()=>Vehicle.RentalRate)" />
+            </div>
+        </div>
+    </fieldset>
+
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+
+    <BackToList Target="vehicles"></BackToList>
+</EditForm>
+
+@code {
+
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Vehicle Vehicle { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Make> makes;
+    private IList<Model> models;
+    private IList<Colour> colours;
+
+    protected async override Task OnInitializedAsync()
+    {
+        makes = await this.client.GetFromJsonAsync<List<Make>>(EndPoints.MakesEndPoint);
+        models = await this.client.GetFromJsonAsync<List<Model>>(EndPoints.ModelsEndPoint);
+        colours = await this.client.GetFromJsonAsync<List<Colour>>(EndPoints.ColoursEndPoint);
+    }
+}

@@ -1,4 +1,6 @@
-﻿using CarRentalManagement.Shared;
+﻿using CarRentalManagement.Server.Filters;
+using CarRentalManagement.Shared;
+using CarRentalManagement.Shared.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CarRentalManagement.Server.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -27,6 +29,7 @@ namespace CarRentalManagement.Server.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(CustomAuthorizationFilterAttribute))]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();

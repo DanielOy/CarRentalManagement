@@ -1,0 +1,17 @@
+﻿@page "/makes/view/{id:int}"
+@inject HttpClient client
+
+<h3>View</h3>
+<FormComponent Disabled="true" Make="make" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Make make = new Make();
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        make = await client.GetFromJsonAsync<Make>($"{EndPoints.MakesEndPoint}/{id}");
+    }
+
+}

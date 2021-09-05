@@ -1,0 +1,16 @@
+﻿@page "/vehicles/view/{id:int}"
+@inject HttpClient client
+
+<h3>Edit</h3>
+<FormComponent Disabled="true" Vehicle="vehicle" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Vehicle vehicle = new Vehicle();
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        vehicle = await client.GetFromJsonAsync<Vehicle>($"{EndPoints.VehiclesEndPoint}/{id}");
+    }
+}

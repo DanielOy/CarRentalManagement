@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,11 @@ namespace CarRentalManagement.Shared.Domain
         public virtual Make Make { get; set; }
         public virtual Colour Colour { get; set; }
         public int ColourId { get; set; }
+       
+        [Required]
         public string Vin { get; set; }
+
+        [Required]
         public string LicensePlateNumber { get; set; }
         public double RentalRate { get; set; }
         public virtual List<Booking> Bookings { get; set; }

@@ -1,5 +1,5 @@
 ﻿@page "/colours/"
-@inject HttpClient client
+@inject IHttpRepository<Colour> client
 @inject IJSRuntime js
 @attribute [Authorize]
 
@@ -49,11 +49,11 @@ else
 }
 
 @code {
-    private List<Colour> Colours;
+    private IList<Colour> Colours;
 
     protected async override Task OnInitializedAsync()
     {
-        Colours = await this.client.GetFromJsonAsync<List<Colour>>(EndPoints.ColoursEndPoint);
+        Colours = await this.client.GetAll(EndPoints.ColoursEndPoint);
     }
 
     async Task Delete(int colourId)
@@ -62,7 +62,7 @@ else
         bool confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {colour.Name}?");
         if (confirm)
         {
-            await client.DeleteAsync($"{EndPoints.ColoursEndPoint}/{colour.Id}");
+            await client.Delete(EndPoints.ColoursEndPoint, colour.Id);
             await OnInitializedAsync();
         }
     }

@@ -1,4 +1,5 @@
-﻿using CarRentalManagement.Client.Services;
+﻿using CarRentalManagement.Client.Contracts;
+using CarRentalManagement.Client.Services;
 using CarRentalManagement.Client.Static;
 using CarRentalManagement.Shared.Domain;
 using Microsoft.AspNetCore.Components;
@@ -13,7 +14,7 @@ namespace CarRentalManagement.Client.Pages.Bookings
 {
     public partial class Create : IDisposable
     {
-        [Inject] HttpClient client { get; set; }
+        [Inject] IHttpRepository<Booking> client { get; set; }
         [Inject] NavigationManager navManager { get; set; }
         [Inject] HttpInterceptorService _interceptor { get; set; }
 
@@ -24,8 +25,7 @@ namespace CarRentalManagement.Client.Pages.Bookings
 
         private async Task CreateBooking()
         {
-            _interceptor.MonitorEvent();
-            await client.PostAsJsonAsync<Booking>($"{EndPoints.BookingsEndPoint}", booking);
+            await client.Create($"{EndPoints.BookingsEndPoint}", booking);
             navManager.NavigateTo("/bookings/");
         }
 

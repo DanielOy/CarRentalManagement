@@ -6,6 +6,13 @@
 
     <fieldset disabled="@Disabled">
         <div class="form-group">
+            <label>Image (Optional):</label>
+            <div>
+                <InputFile OnChange="HandleFileSelection" />
+                <p class="text-danger">@UploadFileWarning</p>
+            </div>
+        </div>
+        <div class="form-group">
             <label>Make: </label>
             <div>
                 <select @bind="Vehicle.MakeId" class="form-control">
@@ -104,6 +111,7 @@
     [Parameter] public Vehicle Vehicle { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
     [Parameter] public EventCallback OnValidSubmit { get; set; }
+    string UploadFileWarning;
 
     private IList<Make> makes;
     private IList<Model> models;
@@ -114,5 +122,25 @@
         makes = await this.client.GetFromJsonAsync<List<Make>>(EndPoints.MakesEndPoint);
         models = await this.client.GetFromJsonAsync<List<Model>>(EndPoints.ModelsEndPoint);
         colours = await this.client.GetFromJsonAsync<List<Colour>>(EndPoints.ColoursEndPoint);
+    }
+
+    private async void HandleFileSelection(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            var ext = System.IO.Path.GetExtension(file.Name);
+            if (ext.ToLower().Contains("jpg") || ext.ToLower().Contains("png") || ext.ToLower().Contains("jpeg"))
+            {
+                var picId = Guid.NewGuid().ToString().Replace("-", "");
+                Vehicle.ImageName = $"{picId}{ext}";
+                Vehicle.Image = new byte[file.Size];
+                await file.OpenReadStream().ReadAsync(Vehicle.Image);
+            }
+            else
+            {
+                UploadFileWarning = "Please select a valid image file (*.jpg | *.png)";
+            }
+        }
     }
 }

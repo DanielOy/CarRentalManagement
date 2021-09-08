@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CarRentalManagement.Shared.Domain
 {
-    public class Booking:BaseDomainModel, IValidatableObject
+    public class Booking : BaseDomainModel, IValidatableObject
     {
         public int VehicleId { get; set; }
         public virtual Vehicle Vehicle { get; set; }
@@ -15,11 +15,11 @@ namespace CarRentalManagement.Shared.Domain
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (DateIn!=null)
+            if (DateIn != null)
             {
                 if (DateIn <= DateOut)
                 {
-                    yield return new ValidationResult("Date in must be greater than Date Out");
+                    yield return new ValidationResult("Date in must be greater than Date Out", new[] { nameof(DateIn) });
                 }
             }
         }

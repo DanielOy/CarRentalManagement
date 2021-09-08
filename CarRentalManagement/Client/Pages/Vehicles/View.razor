@@ -1,5 +1,5 @@
 ﻿@page "/vehicles/view/{id:int}"
-@inject HttpClient client
+@inject IHttpRepository<Vehicle> client
 
 <h3>Edit</h3>
 <FormComponent Disabled="true" Vehicle="vehicle" />
@@ -11,6 +11,6 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        vehicle = await client.GetFromJsonAsync<Vehicle>($"{EndPoints.VehiclesEndPoint}/{id}");
+        vehicle = await client.GetDetails(EndPoints.VehiclesEndPoint, id);
     }
 }

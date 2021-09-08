@@ -1,5 +1,5 @@
 ﻿@page "/colours/create"
-@inject HttpClient client
+@inject IHttpRepository<Colour> client
 @inject NavigationManager navManager
 @attribute [Authorize]
 
@@ -12,10 +12,10 @@
 
 @code {
     Colour colour = new Colour();
-    
+
     private async Task CreateColour()
     {
-        await client.PostAsJsonAsync<Colour>($"{EndPoints.ColoursEndPoint}", colour);
+        await client.Create($"{EndPoints.ColoursEndPoint}", colour);
         navManager.NavigateTo("/colours/");
     }
 }

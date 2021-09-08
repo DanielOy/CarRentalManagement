@@ -22,6 +22,7 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th></th>
                 <th>Make</th>
                 <th>Model</th>
                 <th>Year</th>
@@ -33,6 +34,7 @@ else
             @foreach (var vehicle in vehicles)
             {
                 <tr>
+                    <td><img src="@vehicle.ImageName" style="height:150px; width:150px" /></td>
                     <td>@vehicle.Make.Name</td>
                     <td>@vehicle.Model.Name</td>
                     <td>@vehicle.Year</td>

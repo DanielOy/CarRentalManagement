@@ -1,6 +1,6 @@
 {
-  "name": "CarRentalManagement",
-  "short_name": "CarRentalManagement",
+  "name": "Car Rental Management",
+  "short_name": "Car Rental",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

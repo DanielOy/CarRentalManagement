@@ -1,5 +1,5 @@
 ﻿@page "/colours/edit/{id:int}"
-@inject HttpClient client
+@inject IHttpRepository<Colour> client
 @inject NavigationManager navManager
 
 <h3>Edit</h3>
@@ -12,12 +12,12 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        colour = await client.GetFromJsonAsync<Colour>($"{EndPoints.ColoursEndPoint}/{id}");
+        colour = await client.Get(EndPoints.ColoursEndPoint, id);
     }
 
     async Task EditColour()
     {
-        await client.PutAsJsonAsync<Colour>($"{EndPoints.ColoursEndPoint}/{id}", colour);
+        await client.Update(EndPoints.ColoursEndPoint, colour, id);
         navManager.NavigateTo("/colours/");
     }
 }

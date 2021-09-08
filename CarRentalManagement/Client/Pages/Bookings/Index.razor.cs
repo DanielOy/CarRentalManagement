@@ -1,4 +1,5 @@
-﻿using CarRentalManagement.Client.Services;
+﻿using CarRentalManagement.Client.Contracts;
+using CarRentalManagement.Client.Services;
 using CarRentalManagement.Client.Static;
 using CarRentalManagement.Shared.Domain;
 using Microsoft.AspNetCore.Components;
@@ -14,16 +15,14 @@ namespace CarRentalManagement.Client.Pages.Bookings
 {
     public partial class Index : IDisposable
     {
-        [Inject] HttpClient client { get; set; }
+        [Inject] IHttpRepository<Booking> client { get; set; }
         [Inject] IJSRuntime js { get; set; }
-        [Inject] HttpInterceptorService _interceptor { get; set; }
 
-        private List<Booking> Bookings;
+        private IList<Booking> Bookings;
 
         protected async override Task OnInitializedAsync()
         {
-            _interceptor.MonitorEvent();
-            Bookings = await this.client.GetFromJsonAsync<List<Booking>>(EndPoints.BookingsEndPoint);
+            Bookings = await this.client.GetAll(EndPoints.BookingsEndPoint);
         }
 
         async Task Delete(int bookingId)
@@ -32,15 +31,14 @@ namespace CarRentalManagement.Client.Pages.Bookings
             bool confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete the booking of {booking.Customer.EmailAddress}?");
             if (confirm)
             {
-                _interceptor.MonitorEvent();
-                await client.DeleteAsync($"{EndPoints.BookingsEndPoint}/{booking.Id}");
+                await client.Delete(EndPoints.BookingsEndPoint, booking.Id);
                 await OnInitializedAsync();
             }
         }
 
         public void Dispose()
         {
-            _interceptor.DisposeEvent();
+            js.InvokeVoidAsync("DataTablesDispose", "#bookingsTable");
         }
     }
 }

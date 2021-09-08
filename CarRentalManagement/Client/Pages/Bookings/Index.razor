@@ -1,5 +1,6 @@
 ﻿@page "/bookings/"
 @attribute [Authorize]
+@implements IDisposable
 
 <HeadingComponent Text="Bookings" />
 <br />
@@ -17,7 +18,7 @@
 }
 else
 {
-    <table class="table">
+    <table class="table" id="bookingsTable">
         <thead>
             <tr>
                 <th>Customer Tax Id</th>
@@ -53,5 +54,8 @@ else
 }
 
 @code {
-    
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#bookingsTable");
+    }
 }

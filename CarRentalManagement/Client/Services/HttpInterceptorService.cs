@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Toolbelt.Blazor;
 
@@ -45,7 +46,7 @@ namespace CarRentalManagement.Client.Services
                         break;
                 }
 
-                //throw new Exception(message);
+                throw new HttpRequestException(message);
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿@page "/colours/view/{id:int}"
-@inject HttpClient client
+@inject IHttpRepository<Colour> client
 
 <h3>View</h3>
 <FormComponent Disabled="true" Colour="colour" />
@@ -11,6 +11,6 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        colour = await client.GetFromJsonAsync<Colour>($"{EndPoints.ColoursEndPoint}/{id}");
+        colour = await client.Get(EndPoints.ColoursEndPoint, id);
     }
 }

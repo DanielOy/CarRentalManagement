@@ -1,5 +1,5 @@
 ﻿@page "/makes/create"
-@inject HttpClient client
+@inject IHttpRepository<Make> client
 @inject NavigationManager navManager
 @attribute [Authorize]
 
@@ -15,7 +15,7 @@
 
     private async Task CreateMake()
     {
-        await client.PostAsJsonAsync<Make>($"{EndPoints.MakesEndPoint}", make);
+        await client.Create(EndPoints.MakesEndPoint, make);
         navManager.NavigateTo("/makes/");
     }
 }

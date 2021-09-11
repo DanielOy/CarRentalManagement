@@ -1,5 +1,8 @@
 ﻿@page "/vehicles/create"
-@inject HttpClient client
+@inject IHttpRepository<Vehicle> client
+@inject IHttpRepository<Make> clientMake
+@inject IHttpRepository<Model> clientModel
+@inject IHttpRepository<Colour> clientColour
 @inject NavigationManager navManager
 @attribute [Authorize]
 
@@ -18,14 +21,14 @@
 
     protected async override Task OnInitializedAsync()
     {
-        makes = await this.client.GetFromJsonAsync<List<Make>>(EndPoints.MakesEndPoint);
-        models = await this.client.GetFromJsonAsync<List<Model>>(EndPoints.ModelsEndPoint);
-        colours = await this.client.GetFromJsonAsync<List<Colour>>(EndPoints.ColoursEndPoint);
+        makes = await this.clientMake.GetAll(EndPoints.MakesEndPoint);
+        models = await this.clientModel.GetAll(EndPoints.ModelsEndPoint);
+        colours = await this.clientColour.GetAll(EndPoints.ColoursEndPoint);
     }
 
     private async Task CreateVehicle()
     {
-        await client.PostAsJsonAsync<Vehicle>($"{EndPoints.VehiclesEndPoint}", vehicle);
+        await client.Create(EndPoints.VehiclesEndPoint, vehicle);
         navManager.NavigateTo("/vehicles/");
     }
 }

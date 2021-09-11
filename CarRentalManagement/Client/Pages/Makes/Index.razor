@@ -1,9 +1,10 @@
 ﻿@page "/makes/"
-@inject HttpClient client
+@inject IHttpRepository<Make> client
 @inject IJSRuntime js
+@implements IDisposable
 @attribute [Authorize]
 
-    <HeadingComponent Text="Makes" />
+<HeadingComponent Text="Makes" />
 <br />
 
 <a href="/makes/create" class="btn btn-secondary">
@@ -19,7 +20,7 @@
 }
 else
 {
-    <table class="table">
+    <table class="table" id="makesTable">
         <thead>
             <tr>
                 <th>Name</th>
@@ -50,11 +51,11 @@ else
 
 
 @code {
-    private List<Make> Makes;
+    private IList<Make> Makes;
 
     protected async override Task OnInitializedAsync()
     {
-        Makes = await client.GetFromJsonAsync<List<Make>>(EndPoints.MakesEndPoint);
+        Makes = await client.GetAll(EndPoints.MakesEndPoint);
     }
 
     async Task Delete(int makeId)
@@ -63,8 +64,18 @@ else
         bool confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {make.Name}?");
         if (confirm)
         {
-            await client.DeleteAsync($"{EndPoints.MakesEndPoint}/{make.Id}");
+            await client.Delete(EndPoints.MakesEndPoint, make.Id);
             await OnInitializedAsync();
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#makesTable");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#makesTable");
     }
 }

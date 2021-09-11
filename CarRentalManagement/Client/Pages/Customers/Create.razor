@@ -1,5 +1,5 @@
 ﻿@page "/customers/create"
-@inject HttpClient client
+@inject IHttpRepository<Customer> client
 @inject NavigationManager navManager
 @attribute [Authorize]
 
@@ -15,7 +15,7 @@
 
     private async Task CreateCustomer()
     {
-        await client.PostAsJsonAsync<Customer>($"{EndPoints.CustomersEndPoint}", customer);
+        await client.Create(EndPoints.CustomersEndPoint, customer);
         navManager.NavigateTo("/customers/");
     }
 }

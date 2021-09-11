@@ -1,6 +1,7 @@
 ﻿@page "/vehicles/"
-@inject HttpClient client
+@inject IHttpRepository<Vehicle> client
 @inject IJSRuntime js
+@implements IDisposable
 @attribute [Authorize]
 
 <HeadingComponent Text="Vehicles" />
@@ -19,7 +20,7 @@
 }
 else
 {
-    <table class="table">
+    <table class="table" id="vehiclesTable">
         <thead>
             <tr>
                 <th></th>
@@ -57,11 +58,11 @@ else
 }
 
 @code {
-    private List<Vehicle> vehicles;
+    private IList<Vehicle> vehicles;
 
     protected async override Task OnInitializedAsync()
     {
-        vehicles = await this.client.GetFromJsonAsync<List<Vehicle>>(EndPoints.VehiclesEndPoint);
+        vehicles = await this.client.GetAll(EndPoints.VehiclesEndPoint);
     }
 
     async Task Delete(int vehicleId)
@@ -70,8 +71,18 @@ else
         bool confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {vehicle.LicensePlateNumber}?");
         if (confirm)
         {
-            await client.DeleteAsync($"{EndPoints.VehiclesEndPoint}/{vehicle.Id}");
+            await client.Delete(EndPoints.VehiclesEndPoint, vehicle.Id);
             await OnInitializedAsync();
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#vehiclesTable");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#vehiclesTable");
     }
 }

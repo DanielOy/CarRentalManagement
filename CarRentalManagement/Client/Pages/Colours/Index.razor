@@ -1,6 +1,7 @@
 ﻿@page "/colours/"
 @inject IHttpRepository<Colour> client
 @inject IJSRuntime js
+@implements IDisposable
 @attribute [Authorize]
 
 <HeadingComponent Text="Colours" />
@@ -19,7 +20,7 @@
 }
 else
 {
-    <table class="table">
+    <table class="table" id="coloursTable">
         <thead>
             <tr>
                 <th>Name</th>
@@ -65,5 +66,15 @@ else
             await client.Delete(EndPoints.ColoursEndPoint, colour.Id);
             await OnInitializedAsync();
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#coloursTable");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#coloursTable");
     }
 }

@@ -1,5 +1,5 @@
 ﻿@page "/models/view/{id:int}"
-@inject HttpClient client
+@inject IHttpRepository<Model> client
 @inject NavigationManager navManager
 
 <h3>View</h3>
@@ -12,7 +12,7 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        model = await client.GetFromJsonAsync<Model>($"{EndPoints.ModelsEndPoint}/{id}");
+        model = await client.Get(EndPoints.ModelsEndPoint, id);
     }
 
 }

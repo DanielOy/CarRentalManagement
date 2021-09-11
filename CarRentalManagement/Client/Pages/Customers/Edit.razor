@@ -1,5 +1,5 @@
 ﻿@page "/customers/edit/{id:int}"
-@inject HttpClient client
+@inject IHttpRepository<Customer> client
 @inject NavigationManager navManager
 
 <h3>Edit</h3>
@@ -12,12 +12,12 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        customer = await client.GetFromJsonAsync<Customer>($"{EndPoints.CustomersEndPoint}/{id}");
+        customer = await client.Get(EndPoints.CustomersEndPoint, id);
     }
 
     async Task EditCustomer()
     {
-        await client.PutAsJsonAsync<Customer>($"{EndPoints.CustomersEndPoint}/{id}", customer);
+        await client.Update(EndPoints.CustomersEndPoint, customer, id);
         navManager.NavigateTo("/customers/");
     }
 }
